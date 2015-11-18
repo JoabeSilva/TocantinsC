@@ -90,7 +90,7 @@ NoArvore* trataOperacao();
 Token* lerToken(string);
 Token* nextToken();
 Token* prevToken();
-void imprimeArvore(NoArvore* raiz, int recuo);
+void imprimeArvore(NoArvore* raiz, string outputPath, string indent);
 void status();
 void imprimeNoArvore(NoArvore *);
 
@@ -242,7 +242,7 @@ int main(int argc, char* argv[])
     while (leitor != tokens.end());
 
     // Impressão simploria da arvore gerada
-    imprimeArvore(raiz, 1);
+    imprimeArvore(raiz, output);
 
     return 0;
 }

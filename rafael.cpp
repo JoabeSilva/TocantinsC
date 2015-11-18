@@ -93,9 +93,7 @@ NoArvore* trataFor()
 				{
 					if((*leitor)->classe == CLS_TP)
 					{
-						status();
 						parentesis->filhos.push_back(trataDeclaracaoVariavel()); // adiciona um filho à sub-árvore parentesis utilizando a função trataChamadaVariavel
-						status();
 						leitor--;
 					}
 					else if((*leitor)->valor == "TD")
@@ -114,7 +112,7 @@ NoArvore* trataFor()
 			}
 			else
 				parentesis->filhos.push_back(novoNo(*leitor)); // adiciona um filho à sub-árvore parentesis utilizando o nó atual
-				
+
 			leitor--; // itera para o elemento anterior
 		}
 		else

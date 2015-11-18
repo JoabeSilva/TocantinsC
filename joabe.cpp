@@ -376,6 +376,7 @@ void printTokens(string outputPath)
         file.open(outputPath, ios_base::out|ios_base::trunc);
         file << resultado.str();
         file.close();
+        system(outputPath.c_str());
     }
 }
 
@@ -730,7 +731,7 @@ NoArvore* trataInclude()
 
 /**
  * Monta uma árvore para a estrutura de um bloco de código fonte iniciando em "{" e terminando em "}"
- * 
+ *
  * @return  NoArvore*  A estrutura de árvore que foi montada
  */
 NoArvore* trataBloco()
@@ -750,7 +751,7 @@ NoArvore* trataBloco()
 
 /**
  * Faz os devidos tratamentos e verificações para invocar a função que trata uma operação dentro do código fonte
- * 
+ *
  * @return  NoArvore*  A estrutura de árvore que foi montada
  */
 NoArvore* trataOperacao()
@@ -871,7 +872,7 @@ NoArvore* trataOperacao()
 
 /**
  * Monta uma árvore para a estrutura de um "if" incluindo as estruturas de "else" conseguintes
- * 
+ *
  * @return  NoArvore*  A estrutura de árvore que foi montada
  */
 NoArvore* trataIf()
@@ -911,7 +912,7 @@ NoArvore* trataIf()
 /**
  * Monta uma árvore para a estrutura do primeiro "case" de um switch, os "cases" conseguintes, e o possível
  * "default" encontrado, são adicionados como filhos até que o bloco de "switch" termine
- * 
+ *
  * @return  NoArvore*  A estrutura de árvore que foi montada
  */
 NoArvore* trataCase()
@@ -970,7 +971,7 @@ NoArvore* trataCase()
 
 /**
  * Monta uma árvore para a estrutura de um "switch"
- * 
+ *
  * @return  NoArvore*  A estrutura de árvore que foi montada
  */
 NoArvore* trataSwitch()
@@ -1003,28 +1004,70 @@ NoArvore* trataSwitch()
 }
 
 /**
- * Imprime os lexemas dos tokens de uma árvore fazendo o devido recuo de espaços para que os filhos
- * sejam identificados
- * 
- * @param raiz  Raiz da árvore a ser impressa
- * @param recuo Quantidade de espaços utilizada para recuo
+ * Imprime os lexemas dos tokens de uma árvore em um arquivo fazendo o devido recuo para que os filhos
+ * sejam identificados. Caso o caminho do arquivo esteja vazio a saída é direcionada para a saída
+ * padrão, e a string padrão para indentação são dois espaços.
+ *
+ * @param  raiz    Raiz da árvore a ser impressa
+ * @param  outputPath  Caminho do arquivo de saída
+ * @param  indent  String utilizada para indentação
  */
-void imprimeArvore(NoArvore* raiz, int recuo)
+void imprimeArvore(NoArvore* raiz, string outputPath = "", string indent = "  ")
 {
-    string indent = "  ";
-    int i;
-    vector<NoArvore*>::iterator it;
+    int i, recuo = -1;
+    vector<int> indices;
+    vector<NoArvore*> pilhaNos;
+    stringstream resultado;
+    ofstream file;
 
-    for (i = 0; i < recuo; i++)
-        cout << indent;
-
-    if (raiz->token != NULL)
-        cout << raiz->token->lexema;
-    cout << endl;
-
-    for (it = raiz->filhos.begin(); it != raiz->filhos.end(); ++it)
+    pilhaNos.push_back(raiz);
+    indices.push_back(0);
+    while (pilhaNos.size() > 0)
     {
-        imprimeArvore((*it), recuo+1);
+        // Imprime o lexema atual
+        if (pilhaNos.back()->token != NULL)
+        {
+            for (i = 0; i < recuo; i++)
+                resultado << indent;
+            resultado << pilhaNos.back()->token->lexema;
+        }
+        resultado << endl;
+
+        if (indices.back() < (int) pilhaNos.back()->filhos.size())
+        {
+            pilhaNos.push_back(pilhaNos.back()->filhos[indices.back()]);
+            indices[indices.size()-1]++;
+            indices.push_back(0);
+            recuo++;
+        }
+        else
+        {
+            while (pilhaNos.size() > 0 && indices.back() == (int) pilhaNos.back()->filhos.size())
+            {
+                indices.pop_back();
+                pilhaNos.pop_back();
+                recuo--;
+            }
+            if (pilhaNos.size() > 0 && indices.back() < (int) pilhaNos.back()->filhos.size())
+            {
+                pilhaNos.push_back(pilhaNos.back()->filhos[indices.back()]);
+                indices[indices.size()-1]++;
+                indices.push_back(0);
+                recuo++;
+            }
+        }
+    }
+
+    if (outputPath.empty())
+    {
+        cout << resultado.str();
+    }
+    else
+    {
+        file.open(outputPath, ios_base::out|ios_base::trunc);
+        file << resultado.str();
+        file.close();
+        system(outputPath.c_str());
     }
 }
 
@@ -1063,7 +1106,7 @@ void imprimeNoArvore(NoArvore* no)
 
 /**
  * Monta a estrutura de uma chamada à um identificador de variável
- * 
+ *
  * @return  NoArvore*  A estrutura de árvore que foi montada
  */
 NoArvore* trataChamadaVariavel_()
@@ -1135,7 +1178,7 @@ NoArvore* trataChamadaVariavel_()
 
 /**
  * Monta a estrutura da declaração de uma variável
- * 
+ *
  * @return  NoArvore*  A estrutura de árvore que foi montada
  */
 NoArvore* trataDeclaracaoVariavel_()

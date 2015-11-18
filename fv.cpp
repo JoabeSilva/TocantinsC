@@ -620,7 +620,6 @@ NoArvore* trataDeclaracaoConstante()
     NoArvore* noRaiz = new NoArvore();
     if((*leitor)->valor == "CERQUI")
     {
-        status();
         nextToken();
         if((*leitor)->valor == "DEFINE")
         {
