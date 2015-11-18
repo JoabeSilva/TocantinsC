@@ -1,0 +1,12 @@
+void
+char
+int
+double
+float
+bool
+void*
+char*
+int*
+double*
+float*
+bool*
