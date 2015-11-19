@@ -105,7 +105,7 @@ NoArvore* trataParametrosDF()
     string tipoAsterisco = "";
     if((*leitor)!=tokens.back())
     {
-        leitor++;
+        nextToken();
     }
     else
     {
@@ -114,24 +114,24 @@ NoArvore* trataParametrosDF()
     if((*leitor)->valor=="MULTPL")
     {
         asterisco+= (*leitor)->lexema;
-        leitor--;
+        prevToken();
         tipoAsterisco = (*leitor)->lexema + asterisco;
     }
     else
     {
-        leitor--;
+        prevToken();
         tipoAsterisco = (*leitor)->lexema;
-        //leitor++;
+        //nextToken();
     }
     if((*leitor)->classe==CLS_TP && tipoAsterisco==tipos.find(tipoAsterisco)->first)
     {
         noFilho->tipoRetorno=tipos.find(tipoAsterisco)->second;
         noFilho->token=(*leitor);
         tempF->tiposParametros.push_back(tipos.find(tipoAsterisco)->second);
-        leitor++;
+        nextToken();
         if((*leitor)->valor=="MULTPL" && (*leitor)!=tokens.back())
         {
-            leitor++;
+            nextToken();
         }
 
         if((*leitor)->valor=="TD" && (*leitor)!=tokens.back())
@@ -151,15 +151,15 @@ NoArvore* trataParametrosDF()
             noFilho->filhos.push_back(noNeto);
             (*leitor)->valor = "VARIAV";
             (*leitor)->classe = CLS_ID;
-            leitor++;
+            nextToken();
             if((*leitor)->valor=="ABRCOL"  && (*leitor)!=tokens.back())
             {
-                leitor++;
+                nextToken();
                 if((*leitor)->valor=="FECCOL"  && (*leitor)!=tokens.back())
                 {
-                    leitor++;
+                    nextToken();
                     if((*leitor)->valor=="VIRGUL"  && (*leitor)!=tokens.back())
-                        leitor++;
+                        nextToken();
                 }
                 else
                 {
@@ -168,12 +168,12 @@ NoArvore* trataParametrosDF()
             }
             else if((*leitor)->valor=="VIRGUL"  && (*leitor)!=tokens.back())
             {
-                leitor++;
+                nextToken();
             }
         }
         else if((*leitor)->valor=="VIRGUL")
         {
-            leitor++;
+            nextToken();
         }
     }
     else
@@ -222,12 +222,12 @@ NoArvore* trataDeclaracaoFuncao()
     tempF = new Funcao();
     if((*leitor)->lexema==tipos.find((*leitor)->lexema)->first)
     {
-        noDF->tipoRetorno = (tipos.find((*leitor)->lexema)->second);//insere retorno na árvore temp
+        noDF->tipoRetorno = (tipos.find((*leitor)->lexema)->second);//insere retorno na Ã¡rvore temp
         tempF->tipoRetorno = (tipos.find((*leitor)->lexema)->second);
         retornoFuncaoEmDefinicao = (tipos.find((*leitor)->lexema)->second);
         (*leitor)->valor = "FUNCAO";
         (*leitor)->classe = CLS_ID;
-        leitor++;
+        nextToken();
     }
     else
     {
@@ -250,7 +250,7 @@ NoArvore* trataDeclaracaoFuncao()
 
     if((*leitor)!=tokens.back())
     {
-        leitor++;
+        nextToken();
     }
     else
     {
@@ -258,7 +258,7 @@ NoArvore* trataDeclaracaoFuncao()
     }
     if((*leitor)->valor=="ABPAR" && (*leitor)!=tokens.back())
     {
-        leitor++;
+        nextToken();
     }
     else
     {
@@ -271,7 +271,7 @@ NoArvore* trataDeclaracaoFuncao()
     }
     if((*leitor)!=tokens.back())
     {
-        leitor++;
+        nextToken();
     }
     else
     {
@@ -298,7 +298,7 @@ NoArvore* trataDeclaracaoFuncao()
     {
         if((*leitor)!=tokens.back())
         {
-            leitor++;
+            nextToken();
         }
     }
     else
@@ -490,7 +490,9 @@ NoArvore* trataDeclaracaoVariavel()
                 }
             }
             variaveis.push_back(tempV);
-            noDV->filhos.push_back(noFilho);
+            if((*leitor)->valor != "ATRIB"){
+                noDV->filhos.push_back(noFilho);
+            }
             if((*leitor)->valor == "ATRIB")
             {
                 prevToken();
@@ -505,6 +507,10 @@ NoArvore* trataDeclaracaoVariavel()
                     temTipo = false;
                     nextToken();
                     break;
+                }
+                else
+                {
+                    erro();
                 }
             }
             else if((*leitor)->valor == "VIRGUL")
