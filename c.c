@@ -1,5 +1,7 @@
 #include <string>
 #include <stdlib>
+#define CONSTANTE 1
+#define CONSTANTE "asdf"
 
 int glob, glob2;
 

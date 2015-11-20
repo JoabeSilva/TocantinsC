@@ -4,6 +4,7 @@ case	CASE
 const	CONST
 continue	CONTIN
 default	DEFAUL
+define	DEFINE
 do	DO
 else	ELSE
 enum	ENUM

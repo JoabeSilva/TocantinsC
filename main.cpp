@@ -200,7 +200,22 @@ int main(int argc, char* argv[])
         // Ao encontrar um cerquilha invoca o tratamento de include
         if ((*leitor)->valor == "CERQUI")
         {
-            raiz->filhos.push_back(trataInclude());
+            nextToken();
+            if ((*leitor)->valor == "INCLUD")
+            {
+                prevToken();
+                raiz->filhos.push_back(trataInclude());
+            }
+            else if ((*leitor)->valor == "DEFINE")
+            {
+                prevToken();
+                raiz->filhos.push_back(trataDeclaracaoConstante());
+            }
+            else
+            {
+                cout << "Erro fatal: Diretiva nao esperada \"" << (*leitor)->valor << "\" na linha " << (*leitor)->linha << ", coluna " << (*leitor)->coluna << ", arquivo " << path << "." << endl;
+                exit(0);
+            }
         }
         // Ao encontrar um tipo, pode ser uma declaracao de variavel ou funcao
         else if ((*leitor)->classe == CLS_TP)

@@ -671,7 +671,22 @@ NoArvore* trataInclude()
         {
             if ((*leitor)->valor == "CERQUI")
             {
-                raiz->filhos.push_back(trataInclude());
+                nextToken();
+                if ((*leitor)->valor == "INCLUD")
+                {
+                    prevToken();
+                    raiz->filhos.push_back(trataInclude());
+                }
+                else if ((*leitor)->valor == "DEFINE")
+                {
+                    prevToken();
+                    raiz->filhos.push_back(trataDeclaracaoConstante());
+                }
+                else
+                {
+                    cout << "Erro fatal: Diretiva nao esperada \"" << (*leitor)->valor << "\" na linha " << (*leitor)->linha << ", coluna " << (*leitor)->coluna << ", arquivo " << path << "." << endl;
+                    exit(0);
+                }
             }
             else if ((*leitor)->classe == CLS_TP)
             {
