@@ -592,36 +592,50 @@ NoArvore* trataChamadaVariavel()
 
 NoArvore* trataDeclaracaoConstante()
 {
-    NoArvore* noRaiz = new NoArvore();
+    NoArvore* noDefine = new NoArvore();
+    NoArvore* noConstante;
+    NoArvore* noValor;
     if((*leitor)->valor == "CERQUI")
     {
         nextToken();
         if((*leitor)->valor == "DEFINE")
         {
+            noDefine->token = (*leitor);
+            noDefine->tipoRetorno = tipos.find("void")->second;
             nextToken();
             if((*leitor)->valor == "TD")
             {
                 tempV = new Variavel();
                 tempV->nome = (*leitor)->lexema;
-                tempV->tipo = (tipos.find("int")->second);
+                //tempV->tipo = (tipos.find("int")->second);
                 tempV->global = true;
                 tempV->constante = true;
-                noRaiz->token = (*leitor);
-                noRaiz->tipoRetorno = (tipos.find("int")->second);
                 (*leitor)->valor = "CONSTA";
                 (*leitor)->classe = CLS_ID;
+                noConstante = new NoArvore();
+                noConstante->token = (*leitor);
+                //noConstante->tipoRetorno = (tipos.find("int")->second);
                 nextToken();
                 if((*leitor)->valor == "NUMERO")
                 {
                     tempV->tipo = (tipos.find("float")->second);
-                    noRaiz->tipoRetorno = (tipos.find("float")->second);
+                    noConstante->tipoRetorno = (tipos.find("float")->second);
+                    noValor = new NoArvore();
+                    noValor->token = (*leitor);
+                    noValor->tipoRetorno = (tipos.find("float")->second);
                 }
-                else if((*leitor)->valor == "SRTLIT")
+                else //if((*leitor)->valor == "SRTLIT")
                 {
+                    cout<<"---"<<endl;
                     tempV->tipo = (tipos.find("char*")->second);
-                    noRaiz->tipoRetorno = (tipos.find("char*")->second);
+                    noConstante->tipoRetorno = (tipos.find("char*")->second);
+                    noValor = new NoArvore();
+                    noValor->token = (*leitor);
+                    noValor->tipoRetorno = (tipos.find("char*")->second);
                 }
                 variaveis.push_back(tempV);
+                noConstante->filhos.push_back(noValor);
+                noDefine->filhos.push_back(noConstante);
                 nextToken();
             }
             else
@@ -638,5 +652,5 @@ NoArvore* trataDeclaracaoConstante()
     {
         erro();
     }
-    return noRaiz;
+    return noDefine;
 }
