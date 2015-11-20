@@ -4,11 +4,6 @@
 #include <time.h>
 #include <fstream>
 
-//#define IBPP_WINDOWS = 1
-//#define IBPP_GCC = 1
-
-//#include "ibpp-2-0-5-1-bin-bcc/ibpp.h"
-
 using namespace std;
 list<Funcao*>::iterator itFunc;
 list<Variavel*>::iterator itVar;
@@ -121,7 +116,6 @@ NoArvore* trataParametrosDF()
     {
         prevToken();
         tipoAsterisco = (*leitor)->lexema;
-        //nextToken();
     }
     if((*leitor)->classe==CLS_TP && tipoAsterisco==tipos.find(tipoAsterisco)->first)
     {
@@ -194,10 +188,6 @@ void removeVarLocais()
         {
             tempVar.push_back((*itVar));
             contador++;
-        }
-        else
-        {
-            //cout<<"Nao copia local => "<<(*itVar)->nome<<endl;
         }
         j++;
         itVar++;
@@ -379,7 +369,6 @@ NoArvore* trataDeclaracaoVariavel()
 {
     NoArvore* noDV = new NoArvore();
     bool temAsterisco = false;
-    //cout<<"Leitor: "<<(*leitor)->lexema<<endl;
     if(!temTipo)
     {
         if((*leitor)->classe == CLS_TP)
@@ -411,7 +400,6 @@ NoArvore* trataDeclaracaoVariavel()
         }
         temTipo = true;
     }
-    //cout<<"Leitor: "<<(*leitor)->lexema<<endl;
     while(1)
     {
         if((*leitor)->valor == "TD" && temTipo)
@@ -429,16 +417,13 @@ NoArvore* trataDeclaracaoVariavel()
             (*leitor)->valor = "VARIAV";
             (*leitor)->classe = CLS_ID;
             noFilho->token = (*leitor);
-            //cout<<tipoAsterisco<<endl;
             noFilho->tipoRetorno = (tipos.find(tipoAsterisco)->second);
-            //cout<<noRaiz->tipoRetorno<<endl;
             tempV = new Variavel();
             tempV->nome = (*leitor)->lexema;
             tempV->tipo = (tipos.find(tipoAsterisco)->second);
             tempV->global = !flagDefineFuncao;
             tempV->constante = false;
             nextToken();
-            //cout<<"Leitor: "<<(*leitor)->lexema<<endl;
             if((*leitor)->valor == "ABRCOL")
             {
                 nextToken();
@@ -537,16 +522,6 @@ NoArvore* trataDeclaracaoVariavel()
 
     return noDV;
 }
-/*
-        for (list<Variavel*>::iterator it = variaveis.begin(); it != variaveis.end(); ++it)
-        {
-            if (tokenVariavel->lexema == (*it)->nome)
-            {
-                cout << "Erro fatal: Variavel '" << tokenVariavel->lexema << "' ja declarada na linha " << raiz->token->linha << ", coluna " << raiz->token->coluna << ", arquivo " << path << "." << endl;
-                exit(0);
-            }
-        }
-*/
 
 NoArvore* trataChamadaVariavel()
 {
@@ -647,6 +622,7 @@ NoArvore* trataDeclaracaoConstante()
                     noRaiz->tipoRetorno = (tipos.find("char*")->second);
                 }
                 variaveis.push_back(tempV);
+                nextToken();
             }
             else
             {
